@@ -13,6 +13,7 @@ FPS = 30
 
 LIGHTGREY = (150, 150, 150)
 BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
 
 # Player settings
 PLAYER_SPEED = 300
