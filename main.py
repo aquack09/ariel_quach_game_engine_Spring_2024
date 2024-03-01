@@ -1,6 +1,30 @@
 # This file was created by: Ariel Quach
 # Added this comment to prove that github is listening to my conversations
 # import libraries and modules
+'''
+Game design truths:
+goals, rules, feedback. freedom
+
+Moving enemies
+    dodge the enemies, dont die to the enemies
+Projectiles
+    shoot the most amount of enemies, dont die to the enemies
+Health bar
+Additional types of powerups
+    get more powerups
+Menu
+Different levels
+Kill Enemies
+Feedback when player gets powerup
+Muchroom powerup for player size
+Treasure box w/powerup or coins
+Randomness in all the above
+More maps
+Player death/game over
+Pathing vectoring star search
+aim at mouse
+
+'''
 import pygame as pg
 from settings import *
 from sprites import *
