@@ -18,6 +18,7 @@ YELLOW = (255, 255, 0)
 # Adds color for PowerUp
 RED = (255, 0, 0)
 BROWN = (165, 42, 42)
+WHITE = (255,255,255)
 
 # Player settings
 PLAYER_SPEED = 300
