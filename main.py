@@ -90,6 +90,8 @@ class Game:
                     Coin(self, col, row)
                 if tile == 'U':
                     PowerUp(self, col, row)
+                if tile == 'S':
+                    PowerUpSlow(self, col, row)
     
     # Runs our game
     def run(self):

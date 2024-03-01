@@ -87,6 +87,10 @@ class Player(pg.sprite.Sprite):
             if str(hits[0].__class__.__name__) == "PowerUp":
                 print (hits[0].__class__.__name__)
                 self.speed += 300
+            if str(hits[0].__class__.__name__) == "PowerUpSlow":
+                print (hits[0].__class__.__name__)
+                self.speed -= 150
+            
             
                 
     def update(self):
@@ -138,6 +142,19 @@ class PowerUp (pg.sprite.Sprite):
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+class PowerUpSlow (pg.sprite.Sprite):
+    def __init__ (self, game, x, y):
+        self.groups = game.all_sprites, game.power_ups
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(BROWN)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
