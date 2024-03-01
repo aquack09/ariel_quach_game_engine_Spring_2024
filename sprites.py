@@ -27,14 +27,19 @@ class Player(pg.sprite.Sprite):
     def get_keys(self):
         self.vx, self.vy = 0, 0
         keys = pg.key.get_pressed()
+        # Allows sprite to move left
         if keys[pg.K_LEFT] or keys[pg.K_a]:
-            self.vx = -self.speed  
+            self.vx = -self.speed
+        # Allows sprite to move right  
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
-            self.vx = self.speed  
+            self.vx = self.speed
+        # Allows sprite to move up  
         if keys[pg.K_UP] or keys[pg.K_w]:
-            self.vy = -self.speed  
+            self.vy = -self.speed
+        # Allows sprite to move down  
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.vy = self.speed
+        # This allows so when you move diagonally you move at the same speed
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
