@@ -90,6 +90,9 @@ class Player(pg.sprite.Sprite):
             if str(hits[0].__class__.__name__) == "PowerUpSlow":
                 print (hits[0].__class__.__name__)
                 self.speed -= 150
+            if str(hits[0].__class__.__name__) == "Mob":
+                print (hits[0].__class__.__name__)
+                print ("colided with mob")
             
             
                 
@@ -108,6 +111,7 @@ class Player(pg.sprite.Sprite):
         # Collision for coins, and power_ups
         self.collide_with_group(self.game.coins, True)
         self.collide_with_group(self.game.power_ups, True)
+        self.collide_with_group(self.game.mobs, False)
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
