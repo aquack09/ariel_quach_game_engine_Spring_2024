@@ -4,6 +4,7 @@
 # imports libraries and modules
 import pygame as pg
 from settings import *
+from utils import *
 
 # Creates the player
 class Player(pg.sprite.Sprite):
@@ -23,6 +24,7 @@ class Player(pg.sprite.Sprite):
         self.moneybag = 0
         self.speed = 300
         self.hitpoints = 100
+        self.cooling = False
 
     def get_keys(self):
         self.vx, self.vy = 0, 0
@@ -90,9 +92,11 @@ class Player(pg.sprite.Sprite):
             if str(hits[0].__class__.__name__) == "PowerUpSlow":
                 print (hits[0].__class__.__name__)
                 self.speed -= 150
-            if str(hits[0].__class__.__name__) == "Mob":
-                print (hits[0].__class__.__name__)
-                print ("colided with mob")
+            # if str(hits[0].__class__.__name__) == "Mob":
+            #     print (hits[0].__class__.__name__)
+            #     print ("colided with mob")
+            self.cooling = True
+            print(self.cooling)
             
             
                 
@@ -111,7 +115,11 @@ class Player(pg.sprite.Sprite):
         # Collision for coins, and power_ups
         self.collide_with_group(self.game.coins, True)
         self.collide_with_group(self.game.power_ups, True)
-        self.collide_with_group(self.game.mobs, False)
+        # self.collide_with_group(self.game.mobs, False)
+        if self.game.cooldown.cd < 1:
+            self.cooling = False
+        if not self.cooling:
+            self.collide_with_group(self.game.power_ups, True)
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -212,6 +220,6 @@ class Mob(pg.sprite.Sprite):
         if self.rect.y > self.game.player1.rect.y:
             self.vy = -100
         self.rect.x = self.x
-        self.collide_with_walls('x')
+        # self.collide_with_walls('x')
         self.rect.y = self.y
-        self.collide_with_walls('y')
+        # self.collide_with_walls('y')

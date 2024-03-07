@@ -28,6 +28,7 @@ aim at mouse
 import pygame as pg
 from settings import *
 from sprites import *
+from utils import *
 from random import randint
 import sys
 from os import path
@@ -71,6 +72,7 @@ class Game:
     
     def new(self):
         # creates player
+        self.cooldown = Timer(self)
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
@@ -113,6 +115,7 @@ class Game:
 
     def update(self):
         # Updates self
+        self.cooldown.ticking()
         self.all_sprites.update()
     
     def draw_grid(self):
@@ -123,11 +126,24 @@ class Game:
          for y in range(0, HEIGHT, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
+    def draw_text(self, surface, text, size, color, x, y):
+        font_name = pg.font.match_font('arial')
+        font = pg.font.Font(font_name, size)
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.topleft = (x,y)
+        surface.blit(text_surface, text_rect)
+
     def draw(self):
+            pass
             # fills the background colors
             self.screen.fill(BGCOLOR)
-            self.draw_grid()
+            # self.draw_grid()
             self.all_sprites.draw(self.screen)
+            # draw the timer
+            self.draw_text(self.screen, str(self.cooldown.current_time), 24, WHITE, WIDTH/2 - 32, 2)
+            self.draw_text(self.screen, str(self.cooldown.event_time), 24, WHITE, WIDTH/2 - 32, 80)
+            self.draw_text(self.screen, str(self.cooldown.get_countdown()), 24, WHITE, WIDTH/2 - 32, 120)
             pg.display.flip()
 
     def events(self):
@@ -151,12 +167,27 @@ class Game:
             #         # Allows for the character to move down
             #         self.player1.move(dy=1)
 
-    
+    def show_start_screen(self):
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "This is the start screen", 24, WHITE, WIDTH/2 - 32, 2)
+        pg.display.flip()
+        self.wait_for_key()
+
+    def wait_for_key(self):
+        waiting = True
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.quit()
+                if event.type == pg.KEYUP:
+                    waiting =  False
 
 # Create a new game
 g = Game()
 # use game method run to run
-# g.show_start_screen
+g.show_start_screen
 while True:
     # create new game
     g.new()
