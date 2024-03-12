@@ -7,23 +7,9 @@ goals, rules, feedback. freedom
 
 Moving enemies
     dodge the enemies, dont die to the enemies
-Projectiles
-    shoot the most amount of enemies, dont die to the enemies
-Health bar
 Additional types of powerups
     get more powerups
-Menu
-Different levels
-Kill Enemies
-Feedback when player gets powerup
-Muchroom powerup for player size
-Treasure box w/powerup or coins
-Randomness in all the above
-More maps
-Player death/game over
-Pathing vectoring star search
-aim at mouse
-
+Menu/Start Screen
 '''
 import pygame as pg
 from settings import *
@@ -32,6 +18,7 @@ from utils import *
 from random import randint
 import sys
 from os import path
+from math import floor
 
 # Creating the base bleprints
 class Game:
@@ -48,17 +35,12 @@ class Game:
     
     def load_data(self):
         game_folder = path.dirname(__file__)
+        self.img_folder = path.join(game_folder, 'images')
+        self.snd_folder = path.join(game_folder, 'sounds')
+
+        self.player_img = pg.image.load(path.join(self.img_folder, 'zesty_drake.png')).convert_alpha()
+        self.mob_img = pg.image.load(path.join(self.img_folder, 'peter_griffin.png')).convert_alpha()
         self.map_data = []
-        # 'r'     open for reading (default)
-        # 'w'     open for writing, truncating the file first
-        # 'x'     open for exclusive creation, failing if the file already exists
-        # 'a'     open for writing, appending to the end of the file if it exists
-        # 'b'     binary mode
-        # 't'     text mode (default)
-        # '+'     open a disk file for updating (reading and writing)
-        # 'U'     universal newlines mode (deprecated)
-        # below opens file for reading in text mode
-        # with 
         '''
         The with statement is a context manager in Python. 
         It is used to ensure that a resource is properly closed or released 
@@ -68,18 +50,27 @@ class Game:
             for line in f:
                 print(line)
                 self.map_data.append(line)
-    # Create run method which runs the whole GAME
     
+    # Create run method which runs the whole GAME
     def new(self):
-        # creates player
+        # loading sound for use...not used yet
+        # pg.mixer.music.load(path.join(self.snd_folder, 'soundtrack2.mp3'))
+        # self.collect_sound = pg.mixer.Sound(path.join(self.snd_folder, 'sfx_sounds_powerup16.wav'))
+        # create timer
+        
         self.cooldown = Timer(self)
+        self.testclass = Test()
+        print("start the game...")
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
-        self.power_ups = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
-        self.player1 = Player(self, 1, 1)
-        self.all_sprites.add(self.player1)
+        self.pew_pews = pg.sprite.Group()
+        self.power_ups = pg.sprite.Group()
+
+        # self.player1 = Player(self, 1, 1)
+        # for x in range(10, 20):
+        #     Wall(self, x, 5)
         for row, tiles in enumerate(self.map_data):
             print(row)
             for col, tile in enumerate(tiles):
@@ -88,28 +79,28 @@ class Game:
                     print("a wall at", row, col)
                     Wall(self, col, row)
                 if tile == 'P':
-                    self.player1 = Player(self, col, row)
+                    self.player = Player(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
                 if tile == 'U':
                     PowerUp(self, col, row)
-                if tile == 'S':
-                    PowerUpSlow(self, col, row)
+                if tile == 'm':
+                    Mob2(self, col, row)
                 if tile == 'M':
                     Mob(self, col, row)
     
     # Runs our game
     def run(self):
-        # defines self
+        # start playing sound on infinite loop (loops=-1)
+        # pg.mixer.music.play(loops=-1)
         self.playing = True
         while self.playing:
-            # Sets the FPS
             self.dt = self.clock.tick(FPS) / 1000
             self.events()
             self.update()
             self.draw()
+    
     def quit(self):
-        #  Allows for you to be able to quit the game
          pg.quit()
          sys.exit()
 
@@ -119,8 +110,6 @@ class Game:
         self.all_sprites.update()
     
     def draw_grid(self):
-        #  Creates the grid
-        #  Sets dimensions for the grid
          for x in range(0, WIDTH, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
          for y in range(0, HEIGHT, TILESIZE):
@@ -135,16 +124,14 @@ class Game:
         surface.blit(text_surface, text_rect)
 
     def draw(self):
-            pass
-            # fills the background colors
-            self.screen.fill(BGCOLOR)
-            # self.draw_grid()
-            self.all_sprites.draw(self.screen)
-            # draw the timer
-            self.draw_text(self.screen, str(self.cooldown.current_time), 24, WHITE, WIDTH/2 - 32, 2)
-            self.draw_text(self.screen, str(self.cooldown.event_time), 24, WHITE, WIDTH/2 - 32, 80)
-            self.draw_text(self.screen, str(self.cooldown.get_countdown()), 24, WHITE, WIDTH/2 - 32, 120)
-            pg.display.flip()
+        self.screen.fill(BGCOLOR)
+        # self.draw_grid()
+        self.all_sprites.draw(self.screen)
+        # draw the timer
+        self.draw_text(self.screen, str(self.cooldown.current_time), 24, WHITE, WIDTH/2 - 32, 2)
+        self.draw_text(self.screen, str(self.cooldown.event_time), 24, WHITE, WIDTH/2 - 32, 80)
+        self.draw_text(self.screen, str(self.cooldown.get_countdown()), 24, WHITE, WIDTH/2 - 32, 120)
+        pg.display.flip()
 
     def events(self):
          for event in pg.event.get():
@@ -169,7 +156,7 @@ class Game:
 
     def show_start_screen(self):
         self.screen.fill(BGCOLOR)
-        self.draw_text(self.screen, "This is the start screen", 24, WHITE, WIDTH/2 - 32, 2)
+        self.draw_text(self.screen, "Press any key to start the game", 24, WHITE, WIDTH/2, HEIGHT/2)
         pg.display.flip()
         self.wait_for_key()
 
@@ -187,7 +174,7 @@ class Game:
 # Create a new game
 g = Game()
 # use game method run to run
-g.show_start_screen
+g.show_start_screen()
 while True:
     # create new game
     g.new()
