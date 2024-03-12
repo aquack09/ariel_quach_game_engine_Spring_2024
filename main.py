@@ -139,24 +139,24 @@ class Game:
                 self.quit()
             # if event.type == pg.KEYDOWN:
             #     if event.key == pg.K_a:
-            #         # Allows for the character to move lefts
+            #         Allows for the character to move lefts
             #         self.player1.move(dx=-1)
             # if event.type == pg.KEYDOWN:
             #     if event.key == pg.K_w:
-            #         # Allows for the character to move up
+            #         Allows for the character to move up
             #         self.player1.move(dy=-1)
             # if event.type == pg.KEYDOWN:
             #     if event.key == pg.K_d:
-            #         # Allows for the character to move right
+            #         Allows for the character to move right
             #         self.player1.move(dx=1)
             # if event.type == pg.KEYDOWN:
             #     if event.key == pg.K_s:
-            #         # Allows for the character to move down
+            #         Allows for the character to move down
             #         self.player1.move(dy=1)
 
     def show_start_screen(self):
         self.screen.fill(BGCOLOR)
-        self.draw_text(self.screen, "Press any key to start the game", 24, WHITE, WIDTH/2, HEIGHT/2)
+        self.draw_text(self.screen, "Press any key to start the game", 24, WHITE, WIDTH/2.75, HEIGHT/2.25)
         pg.display.flip()
         self.wait_for_key()
 
