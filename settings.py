@@ -3,7 +3,7 @@ HEIGHT = 768
 # sets the FPS
 FPS = 30
 # Sets the diensions for the display
-TITLE = "THIS GAME TOTALLY WASN'T MADE BY AI"
+TITLE = "I need the max win"
 # The title of the game
 TILESIZE = 32
 # The dimentions of objects (32x32)

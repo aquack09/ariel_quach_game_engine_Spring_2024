@@ -20,6 +20,9 @@ import sys
 from os import path
 from math import floor
 
+LEVEL1 = "level1.txt"
+LEVEL2 = "level2.txt"
+
 # Creating the base bleprints
 class Game:
     # Initializer -- sets up the game
@@ -34,22 +37,59 @@ class Game:
         self.load_data()
     
     def load_data(self):
-        game_folder = path.dirname(__file__)
-        self.img_folder = path.join(game_folder, 'images')
-        self.snd_folder = path.join(game_folder, 'sounds')
+        # game_folder = path.dirname(__file__)
+        # self.img_folder = path.join(game_folder, 'images')
+        # self.snd_folder = path.join(game_folder, 'sounds')
+        self.game_folder = path.dirname(__file__)
+        self.img_folder = path.join(self.game_folder, 'images')
+        self.snd_folder = path.join(self.game_folder, 'sounds')
 
         self.player_img = pg.image.load(path.join(self.img_folder, 'zesty_drake.png')).convert_alpha()
         self.mob_img = pg.image.load(path.join(self.img_folder, 'peter_griffin.png')).convert_alpha()
+        self.mob2_img = pg.image.load(path.join(self.img_folder, 'python.png')).convert_alpha()
         self.map_data = []
         '''
         The with statement is a context manager in Python. 
         It is used to ensure that a resource is properly closed or released 
         after it is used. This can help to prevent errors and leaks.
         '''
-        with open(path.join(game_folder, 'map.txt'), 'rt') as f:
+        with open(path.join(self.game_folder, LEVEL1), 'rt') as f:
             for line in f:
                 print(line)
                 self.map_data.append(line)
+
+
+    def change_level(self, lvl):
+        # kill all existing sprites first to save memory
+        for s in self.all_sprites:
+            s.kill()
+        # reset criteria for changing level
+        self.player.moneybag = 0
+        # reset map data list to empty
+        self.map_data = []
+        # open next level
+        with open(path.join(self.game_folder, lvl), 'rt') as f:
+            for line in f:
+                print(line)
+                self.map_data.append(line)
+        # repopulate the level with stuff
+        for row, tiles in enumerate(self.map_data):
+            print(row)
+            for col, tile in enumerate(tiles):
+                print(col)
+                if tile == '1':
+                    print("a wall at", row, col)
+                    Wall(self, col, row)
+                if tile == 'P':
+                    self.player = Player(self, col, row)
+                if tile == 'C':
+                    Coin(self, col, row)
+                if tile == 'M':
+                    Mob(self, col, row)
+                if tile == 'm':
+                    Mob2(self, col, row)
+                if tile == 'U':
+                    PowerUp(self, col, row)
     
     # Create run method which runs the whole GAME
     def new(self):
@@ -88,6 +128,8 @@ class Game:
                     Mob2(self, col, row)
                 if tile == 'M':
                     Mob(self, col, row)
+                if tile == 'B':
+                    BossMob(self, col, row)
     
     # Runs our game
     def run(self):
@@ -108,6 +150,8 @@ class Game:
         # Updates self
         self.cooldown.ticking()
         self.all_sprites.update()
+        if self.player.moneybag > 2:
+            self.change_level(LEVEL2)
     
     def draw_grid(self):
          for x in range(0, WIDTH, TILESIZE):
