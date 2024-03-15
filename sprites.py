@@ -74,15 +74,15 @@ class Player(pg.sprite.Sprite):
             self.vy = self.speed
             self.dir = ((0,1))
         if keys[pg.K_e]:
-            print("trying to shoot...")
+            # print("trying to shoot...")
             self.pew()
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
     def pew(self):
         p = PewPew(self.game, self.rect.x, self.rect.y)
-        print(p.rect.x)
-        print(p.rect.y)
+        # print(p.rect.x)
+        # print(p.rect.y)
 
     # def move(self, dx=0, dy=0):
     #     if not self.collide_with_walls(dx, dy):
@@ -124,6 +124,8 @@ class Player(pg.sprite.Sprite):
                 self.speed += 200
             if str(hits[0].__class__.__name__) == "HealthPowerUp":
                 self.hitpoints += 100
+            if str(hits[0].__class__.__name__) == "InvincibilityPowerUp":
+                self.hitpoints += 1000
             if str(hits[0].__class__.__name__) == "PowerUp":
                 print(hits[0].__class__.__name__)
                 # self.game.collect_sound.play()
@@ -146,8 +148,8 @@ class Player(pg.sprite.Sprite):
                 # print("Collided with mob")
                 # self.hitpoints -= 1
                  self.hitpoints -= 10
-                 if self.status == "Invincible":
-                     print("you can't hurt me")
+                #  if self.status == "Invincible":
+                #      print("you can't hurt me")
 
     def update(self):
         self.get_keys()
@@ -182,7 +184,7 @@ class PewPew(pg.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.speed = 10
-        print("I created a pew pew...")
+        # print("I created a pew pew...")
     def collide_with_group(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         # if hits:
@@ -244,6 +246,19 @@ class HealthPowerUp(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+
+# class InvincibilityPowerUp(pg.sprite.Sprite):
+#     def __init__(self, game, x, y):
+#         self.groups = game.all_sprites, game.power_ups
+#         pg.sprite.Sprite.__init__(self, self.groups)
+#         self.game = game
+#         self.image = pg.Surface((TILESIZE, TILESIZE))
+#         self.image.fill(LIGHTGREY)
+#         self.rect = self.image.get_rect()
+#         self.x = x
+#         self.y = y
+#         self.rect.x = x * TILESIZE
+#         self.rect.y = y * TILESIZE
         
 class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -262,6 +277,7 @@ class Mob(pg.sprite.Sprite):
         self.acc = vec(0, 0)
         self.rect.center = self.pos
         self.rot = 0
+        # self.hitpoints == 100
         # added
         self.speed = 150
         # self.health = MOB_HEALTH
@@ -301,6 +317,7 @@ class Mob2(pg.sprite.Sprite):
         self.acc = vec(0, 0)
         self.rect.center = self.pos
         self.rot = 0
+        # self.hitpoints == 100
         # added
         self.speed = 150
         # self.health = MOB_HEALTH

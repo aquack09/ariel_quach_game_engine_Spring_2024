@@ -15,6 +15,7 @@ import pygame as pg
 from settings import *
 from sprites import *
 from utils import *
+from health_bar import *
 from random import randint
 import sys
 from os import path
@@ -54,7 +55,7 @@ class Game:
         self.game_folder = path.dirname(__file__)
         self.img_folder = path.join(self.game_folder, 'images')
         self.snd_folder = path.join(self.game_folder, 'sounds')
-
+        # creates images for characters through converting a png to an alpha
         self.player_img = pg.image.load(path.join(self.img_folder, 'zesty_drake.png')).convert_alpha()
         self.mob_img = pg.image.load(path.join(self.img_folder, 'AnitaMaxWyn.png')).convert_alpha()
         self.BossMob_img = pg.image.load(path.join(self.img_folder, 'peter_griffin.png')).convert_alpha()
@@ -168,6 +169,8 @@ class Game:
         # Updates self
         self.cooldown.ticking()
         self.all_sprites.update()
+        if self.player.hitpoints == 0:
+            self.show_death_screen()
         if self.player.moneybag > 2:
             self.change_level(LEVEL2)
     
@@ -217,6 +220,7 @@ class Game:
             #         Allows for the character to move down
             #         self.player1.move(dy=1)
 
+    
     def show_start_screen(self):
         self.screen.fill(BGCOLOR)
         self.draw_text(self.screen, "Press any key to start the game", 24, WHITE, WIDTH/2.75, HEIGHT/2.25)
@@ -224,11 +228,10 @@ class Game:
         self.wait_for_key()
     
     def show_death_screen(self):
-         if self.hitpoints == 0:
-             self.screen.fill(BGCOLOR)
-             self.draw_text(self.screen, "You Died :( Press any key to restart", 24, RED, WIDTH/2.75, HEIGHT/2.25)
-             pg.display.flip()
-             self.wait_for_key()
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "WOW You're so good at this game", 24, RED, WIDTH/2.75, HEIGHT/2.25)
+        pg.display.flip()
+        self.wait_for_key()
 
     def wait_for_key(self):
         waiting = True
