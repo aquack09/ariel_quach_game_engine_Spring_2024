@@ -23,6 +23,7 @@ from math import floor
 
 LEVEL1 = "level1.txt"
 LEVEL2 = "level2.txt"
+LEVEL3 = "level3.txt"
 
 def draw_health_bar(surf, x, y, pct):
     if pct < 0:
@@ -66,6 +67,7 @@ class Game:
         It is used to ensure that a resource is properly closed or released 
         after it is used. This can help to prevent errors and leaks.
         '''
+        self.currLvl = LEVEL1
         with open(path.join(self.game_folder, LEVEL1), 'rt') as f:
             for line in f:
                 print(line)
@@ -73,6 +75,7 @@ class Game:
 
 
     def change_level(self, lvl):
+        self.currLvl = lvl
         # kill all existing sprites first to save memory
         for s in self.all_sprites:
             s.kill()
@@ -101,6 +104,8 @@ class Game:
                     Mob(self, col, row)
                 if tile == 'H':
                     HealthPowerUp(self, col, row)
+                if tile == 'S':
+                    SlowPowerUp(self, col, row)
                 if tile == 'l':
                     Mob2(self, col, row)
                 if tile == 'U':
@@ -141,6 +146,8 @@ class Game:
                     Coin(self, col, row)
                 if tile == 'H':
                     HealthPowerUp(self, col, row)
+                if tile == 'S':
+                    SlowPowerUp(self, col, row)
                 if tile == 'U':
                     PowerUp(self, col, row)
                 if tile == 'l':
@@ -169,10 +176,14 @@ class Game:
         # Updates self
         self.cooldown.ticking()
         self.all_sprites.update()
-        if self.player.hitpoints == 0:
+        if self.player.hitpoints < 1:
             self.show_death_screen()
-        if self.player.moneybag > 2:
-            self.change_level(LEVEL2)
+            self.show_mad_screen()
+            self.change_level(LEVEL1)
+        if 2 < self.player.moneybag < 4 and self.currLvl != LEVEL2:
+             self.change_level(LEVEL2)
+        if self.player.moneybag > 4:
+            self.change_level(LEVEL3)
     
     def draw_grid(self):
          for x in range(0, WIDTH, TILESIZE):
@@ -229,7 +240,13 @@ class Game:
     
     def show_death_screen(self):
         self.screen.fill(BGCOLOR)
-        self.draw_text(self.screen, "WOW You're so good at this game", 24, RED, WIDTH/2.75, HEIGHT/2.25)
+        self.draw_text(self.screen, "WOW You're so good at this game", 40, RED, WIDTH/3.75, HEIGHT/2.25)
+        pg.display.flip()
+        self.wait_for_key()
+    
+    def show_mad_screen(self):
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "ARE YOU EVEN A PRO GAMER???", 40, RED, WIDTH/3.75, HEIGHT/2.25)
         pg.display.flip()
         self.wait_for_key()
 

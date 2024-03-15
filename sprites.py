@@ -55,6 +55,7 @@ class Player(pg.sprite.Sprite):
         self.cooling = False
         self.pos = vec(0,0)
         self.dir = vec(0,0)
+        self.material = True
     
     def get_keys(self):
         self.vx, self.vy = 0, 0 
@@ -76,6 +77,7 @@ class Player(pg.sprite.Sprite):
         if keys[pg.K_e]:
             # print("trying to shoot...")
             self.pew()
+        
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
@@ -96,24 +98,25 @@ class Player(pg.sprite.Sprite):
     #     return False
             
     def collide_with_walls(self, dir):
-        if dir == 'x':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False)
-            if hits:
-                if self.vx > 0:
-                    self.x = hits[0].rect.left - self.rect.width
-                if self.vx < 0:
-                    self.x = hits[0].rect.right
-                self.vx = 0
-                self.rect.x = self.x
-        if dir == 'y':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False)
-            if hits:
-                if self.vy > 0:
-                    self.y = hits[0].rect.top - self.rect.height
-                if self.vy < 0:
-                    self.y = hits[0].rect.bottom
-                self.vy = 0
-                self.rect.y = self.y
+        if self.material:
+            if dir == 'x':
+                hits = pg.sprite.spritecollide(self, self.game.walls, False)
+                if hits:
+                    if self.vx > 0:
+                        self.x = hits[0].rect.left - self.rect.width
+                    if self.vx < 0:
+                        self.x = hits[0].rect.right
+                    self.vx = 0
+                    self.rect.x = self.x
+            if dir == 'y':
+                hits = pg.sprite.spritecollide(self, self.game.walls, False)
+                if hits:
+                    if self.vy > 0:
+                        self.y = hits[0].rect.top - self.rect.height
+                    if self.vy < 0:
+                        self.y = hits[0].rect.bottom
+                    self.vy = 0
+                    self.rect.y = self.y
     
     # made possible by Aayush's question!
     def collide_with_group(self, group, kill):
@@ -121,11 +124,11 @@ class Player(pg.sprite.Sprite):
         if hits:
             if str(hits[0].__class__.__name__) == "Coin":
                 self.moneybag += 1
-                self.speed += 200
+                self.speed += 100
             if str(hits[0].__class__.__name__) == "HealthPowerUp":
                 self.hitpoints += 100
-            if str(hits[0].__class__.__name__) == "InvincibilityPowerUp":
-                self.hitpoints += 1000
+            if str(hits[0].__class__.__name__) == "SlowPowerUp":
+                self.speed -= 100
             if str(hits[0].__class__.__name__) == "PowerUp":
                 print(hits[0].__class__.__name__)
                 # self.game.collect_sound.play()
@@ -228,6 +231,19 @@ class PowerUp(pg.sprite.Sprite):
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(PURPLE)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+class SlowPowerUp(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.power_ups
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(GREEN)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
