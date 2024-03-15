@@ -5,6 +5,7 @@
 import pygame as pg
 from settings import *
 from utils import *
+from health_bar import *
 from random import choice
 
 vec =pg.math.Vector2
@@ -53,6 +54,7 @@ class Player(pg.sprite.Sprite):
         self.hitpoints = 100
         self.cooling = False
         self.pos = vec(0,0)
+        self.dir = vec(0,0)
     
     def get_keys(self):
         self.vx, self.vy = 0, 0 
@@ -61,12 +63,16 @@ class Player(pg.sprite.Sprite):
             self.game.test_method()
         if keys[pg.K_LEFT] or keys[pg.K_a]:
             self.vx = -self.speed
+            self.dir = ((-1,0))
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
             self.vx = self.speed
+            self.dir = ((1,0))
         if keys[pg.K_UP] or keys[pg.K_w]:
-            self.vy = -self.speed  
+            self.vy = -self.speed
+            self.dir = ((0,-1))  
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.vy = self.speed
+            self.dir = ((0,1))
         if keys[pg.K_e]:
             print("trying to shoot...")
             self.pew()
@@ -115,6 +121,9 @@ class Player(pg.sprite.Sprite):
         if hits:
             if str(hits[0].__class__.__name__) == "Coin":
                 self.moneybag += 1
+                self.speed += 200
+            if str(hits[0].__class__.__name__) == "HealthPowerUp":
+                self.hitpoints += 100
             if str(hits[0].__class__.__name__) == "PowerUp":
                 print(hits[0].__class__.__name__)
                 # self.game.collect_sound.play()
@@ -129,6 +138,14 @@ class Player(pg.sprite.Sprite):
                 # print(hits[0].__class__.__name__)
                 # print("Collided with mob")
                 # self.hitpoints -= 1
+                 self.hitpoints -= 1
+                 if self.status == "Invincible":
+                     print("you can't hurt me")
+            if str(hits[0].__class__.__name__) == "BossMob":
+                # print(hits[0].__class__.__name__)
+                # print("Collided with mob")
+                # self.hitpoints -= 1
+                 self.hitpoints -= 10
                  if self.status == "Invincible":
                      print("you can't hurt me")
 
@@ -209,6 +226,19 @@ class PowerUp(pg.sprite.Sprite):
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(PURPLE)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+class HealthPowerUp(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.power_ups
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(BROWN)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y

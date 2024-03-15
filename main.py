@@ -23,6 +23,17 @@ from math import floor
 LEVEL1 = "level1.txt"
 LEVEL2 = "level2.txt"
 
+def draw_health_bar(surf, x, y, pct):
+    if pct < 0:
+        pct = 0
+    BAR_LENGTH = 32
+    BAR_HEIGHT = 10
+    fill = (pct / 100) * BAR_LENGTH
+    outline_rect = pg.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
+    fill_rect = pg.Rect(x, y, fill, BAR_HEIGHT)
+    pg.draw.rect(surf, GREEN, fill_rect)
+    pg.draw.rect(surf, WHITE, outline_rect, 2)
+
 # Creating the base bleprints
 class Game:
     # Initializer -- sets up the game
@@ -85,8 +96,10 @@ class Game:
                     self.player = Player(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
-                if tile == 'bd':
+                if tile == 'b':
                     Mob(self, col, row)
+                if tile == 'H':
+                    HealthPowerUp(self, col, row)
                 if tile == 'l':
                     Mob2(self, col, row)
                 if tile == 'U':
@@ -125,6 +138,8 @@ class Game:
                     self.player = Player(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
+                if tile == 'H':
+                    HealthPowerUp(self, col, row)
                 if tile == 'U':
                     PowerUp(self, col, row)
                 if tile == 'l':
@@ -178,6 +193,7 @@ class Game:
         self.draw_text(self.screen, str(self.cooldown.current_time), 24, WHITE, WIDTH/2 - 32, 2)
         self.draw_text(self.screen, str(self.cooldown.event_time), 24, WHITE, WIDTH/2 - 32, 80)
         self.draw_text(self.screen, str(self.cooldown.get_countdown()), 24, WHITE, WIDTH/2 - 32, 120)
+        draw_health_bar(self.screen, self.player.rect.x, self.player.rect.y-8, self.player.hitpoints)
         pg.display.flip()
 
     def events(self):
@@ -206,6 +222,13 @@ class Game:
         self.draw_text(self.screen, "Press any key to start the game", 24, WHITE, WIDTH/2.75, HEIGHT/2.25)
         pg.display.flip()
         self.wait_for_key()
+    
+    def show_death_screen(self):
+         if self.hitpoints == 0:
+             self.screen.fill(BGCOLOR)
+             self.draw_text(self.screen, "You Died :( Press any key to restart", 24, RED, WIDTH/2.75, HEIGHT/2.25)
+             pg.display.flip()
+             self.wait_for_key()
 
     def wait_for_key(self):
         waiting = True
@@ -227,4 +250,4 @@ while True:
     g.new()
     # run the game
     g.run()
-    # g.show_go_scrren()
+    # g.show_go_screen()
