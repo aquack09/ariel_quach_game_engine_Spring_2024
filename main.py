@@ -45,7 +45,8 @@ class Game:
         self.snd_folder = path.join(self.game_folder, 'sounds')
 
         self.player_img = pg.image.load(path.join(self.img_folder, 'zesty_drake.png')).convert_alpha()
-        self.mob_img = pg.image.load(path.join(self.img_folder, 'peter_griffin.png')).convert_alpha()
+        self.mob_img = pg.image.load(path.join(self.img_folder, 'AnitaMaxWyn.png')).convert_alpha()
+        self.BossMob_img = pg.image.load(path.join(self.img_folder, 'peter_griffin.png')).convert_alpha()
         self.mob2_img = pg.image.load(path.join(self.img_folder, 'python.png')).convert_alpha()
         self.map_data = []
         '''
@@ -84,12 +85,14 @@ class Game:
                     self.player = Player(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
-                if tile == 'M':
+                if tile == 'bd':
                     Mob(self, col, row)
-                if tile == 'm':
+                if tile == 'l':
                     Mob2(self, col, row)
                 if tile == 'U':
                     PowerUp(self, col, row)
+                if tile == 'M':
+                    BossMob(self, col, row)
     
     # Create run method which runs the whole GAME
     def new(self):
@@ -124,11 +127,11 @@ class Game:
                     Coin(self, col, row)
                 if tile == 'U':
                     PowerUp(self, col, row)
-                if tile == 'm':
+                if tile == 'l':
                     Mob2(self, col, row)
-                if tile == 'M':
+                if tile == 'b':
                     Mob(self, col, row)
-                if tile == 'B':
+                if tile == 'M':
                     BossMob(self, col, row)
     
     # Runs our game
