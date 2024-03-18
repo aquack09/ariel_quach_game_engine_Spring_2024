@@ -143,7 +143,7 @@ class Player(pg.sprite.Sprite):
                 # print(hits[0].__class__.__name__)
                 # print("Collided with mob")
                 # self.hitpoints -= 1
-                 self.hitpoints -= 1
+                 self.hitpoints -= 5
                  if self.status == "Invincible":
                      print("you can't hurt me")
             if str(hits[0].__class__.__name__) == "BossMob":
