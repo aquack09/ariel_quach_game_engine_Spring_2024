@@ -24,6 +24,8 @@ from math import floor
 LEVEL1 = "level1.txt"
 LEVEL2 = "level2.txt"
 LEVEL3 = "level3.txt"
+LEVEL4 = "level4.txt"
+LEVEL5 = "level5.txt"
 
 # Draws healthbar
 def draw_health_bar(surf, x, y, pct):
@@ -66,6 +68,7 @@ class Game:
         self.mob_img = pg.image.load(path.join(self.img_folder, 'AnitaMaxWyn.png')).convert_alpha()
         self.BossMob_img = pg.image.load(path.join(self.img_folder, 'peter_griffin.png')).convert_alpha()
         self.mob2_img = pg.image.load(path.join(self.img_folder, 'python.png')).convert_alpha()
+        self.SuperMob_img = pg.image.load(path.join(self.img_folder, 'cat.png')).convert_alpha()
         self.map_data = []
         '''
         The with statement is a context manager in Python. 
@@ -117,6 +120,8 @@ class Game:
                     PowerUp(self, col, row)
                 if tile == 'M':
                     BossMob(self, col, row)
+                if tile == 'k':
+                    SuperMob(self, col, row)
     
     # Create run method which runs the whole GAME
     def new(self):
@@ -162,6 +167,8 @@ class Game:
                     Mob(self, col, row)
                 if tile == 'M':
                     BossMob(self, col, row)
+                if tile == 'k':
+                    SuperMob(self, col, row)
     
     # Runs our game
     def run(self):
@@ -195,6 +202,15 @@ class Game:
             self.change_level(LEVEL3)
         if self.currLvl == LEVEL3 and self.player.moneybag > 7:
             self.show_wow_screen()
+            self.show_restart_screen()
+            self.change_level(LEVEL4)
+        if self.currLvl == LEVEL4 and self.player.moneybag > 3:
+            self.show_boss_screen()
+            self.show_oh_screen()
+            self.change_level(LEVEL5)
+        if self.currLvl == LEVEL5 and self.player.moneybag == 1:
+            self.show_boss_beat_screen()
+            self.show_restart_screen()
             self.change_level(LEVEL1)
 
     
@@ -270,10 +286,34 @@ class Game:
         self.draw_text(self.screen, "Wow you beat that level", 40, RED, WIDTH/3, HEIGHT/2.25)
         pg.display.flip()
         self.wait_for_key()
+
+    def show_boss_beat_screen(self):
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "Wow you actually beat the boss", 40, RED, WIDTH/3.75, HEIGHT/2.25)
+        pg.display.flip()
+        self.wait_for_key()
+
+    def show_restart_screen(self):
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "Now you have to restart GL ;)", 40, RED, WIDTH/3.25, HEIGHT/2.25)
+        pg.display.flip()
+        self.wait_for_key()
+
+    def show_boss_screen(self):
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "Now you have to beat the final Boss GL ;)", 40, RED, WIDTH/4.75, HEIGHT/2.25)
+        pg.display.flip()
+        self.wait_for_key()
     
     def show_gl_screen(self):
         self.screen.fill(BGCOLOR)
         self.draw_text(self.screen, "GL;)", 40, RED, WIDTH/2, HEIGHT/2.25)
+        pg.display.flip()
+        self.wait_for_key()
+
+    def show_oh_screen(self):
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "...", 40, RED, WIDTH/2, HEIGHT/2.25)
         pg.display.flip()
         self.wait_for_key()
 

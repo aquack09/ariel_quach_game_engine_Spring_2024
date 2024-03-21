@@ -49,7 +49,7 @@ class Player(pg.sprite.Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.moneybag = 0
-        self.speed = 300
+        self.speed = 200
         self.status = ""
         self.hitpoints = 100
         self.cooling = False
@@ -125,7 +125,7 @@ class Player(pg.sprite.Sprite):
         if hits:
             if str(hits[0].__class__.__name__) == "Coin":
                 self.moneybag += 1
-                self.speed += 100
+                self.speed -= 10
             if str(hits[0].__class__.__name__) == "HealthPowerUp":
                 self.hitpoints += 100
             if str(hits[0].__class__.__name__) == "SlowPowerUp":
@@ -159,6 +159,13 @@ class Player(pg.sprite.Sprite):
                 # print("Collided with mob")
                 # self.hitpoints -= 1
                  self.hitpoints -= 10
+                #  if self.status == "Invincible":
+                #      print("you can't hurt me")
+            if str(hits[0].__class__.__name__) == "SuperMob":
+                # print(hits[0].__class__.__name__)
+                # print("Collided with mob")
+                # self.hitpoints -= 1
+                 self.hitpoints -= 100
                 #  if self.status == "Invincible":
                 #      print("you can't hurt me")
 
@@ -307,6 +314,48 @@ class Mob(pg.sprite.Sprite):
         # added
         # Sets speed
         self.speed = 150
+        # self.health = MOB_HEALTH
+
+# allows for tracking of Mob#1
+    def update(self):
+        # Mob tracking
+        self.rot = (self.game.player.rect.center - self.pos).angle_to(vec(1, 0))
+        # self.image = pg.transform.rotate(self.image, 45)
+        # self.rect = self.image.get_rect()
+        self.rect.center = self.pos
+        self.acc = vec(self.speed, 0).rotate(-self.rot)
+        self.acc += self.vel * -1
+        self.vel += self.acc * self.game.dt
+        self.pos += self.vel * self.game.dt + 0.5 * self.acc * self.game.dt ** 2
+        # self.hit_rect.centerx = self.pos.x
+        collide_with_walls(self, self.game.walls, 'x')
+        # self.hit_rect.centery = self.pos.y
+        collide_with_walls(self, self.game.walls, 'y')
+        # self.rect.center = self.hit_rect.center
+        # if self.health <= 0:
+        #     self.kill()
+
+class SuperMob(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.mobs
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        # self.image = game.mob_img
+        # self.image = pg.Surface((TILESIZE, TILESIZE))
+        # self.image.fill(ORANGE)
+        self.image = self.game.SuperMob_img
+        self.rect = self.image.get_rect()
+        # self.hit_rect = MOB_HIT_RECT.copy()
+        # self.hit_rect.center = self.rect.center
+        self.pos = vec(x, y) * TILESIZE
+        self.vel = vec(0, 0)
+        self.acc = vec(0, 0)
+        self.rect.center = self.pos
+        self.rot = 0
+        # self.hitpoints == 100
+        # added
+        # Sets speed
+        self.speed = 300
         # self.health = MOB_HEALTH
 
 # allows for tracking of Mob#1
