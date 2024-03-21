@@ -188,12 +188,12 @@ class Game:
             self.show_death_screen()
             self.show_gl_screen()
             self.change_level(LEVEL1)
-        if 2 < self.player.moneybag <= 4 and self.currLvl != LEVEL3 and self.currLvl != LEVEL2:
+        if self.currLvl == LEVEL1 and self.player.moneybag > 3 and self.currLvl != LEVEL2:
              self.change_level(LEVEL2)
-        if self.player.moneybag > 5 and self.currLvl != LEVEL3:
+        if self.player.moneybag > 6 and self.currLvl != LEVEL3:
             self.show_gl_screen()
             self.change_level(LEVEL3)
-        if 6 < self.player.moneybag < 7:
+        if self.currLvl == LEVEL3 and self.player.moneybag > 7:
             self.show_wow_screen()
             self.change_level(LEVEL1)
 
@@ -267,7 +267,7 @@ class Game:
 
     def show_wow_screen(self):
         self.screen.fill(BGCOLOR)
-        self.draw_text(self.screen, "Wow you beat that level", 40, RED, WIDTH/3.75, HEIGHT/2.25)
+        self.draw_text(self.screen, "Wow you beat that level", 40, RED, WIDTH/3, HEIGHT/2.25)
         pg.display.flip()
         self.wait_for_key()
     
