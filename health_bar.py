@@ -4,6 +4,7 @@ from settings import *
 import pygame
 
 def draw_shield_bar(surf, x, y, pct):
+    # draws the bar
     if pct < 0:
         pct = 0
     BAR_LENGTH = 100

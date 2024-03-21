@@ -1,3 +1,5 @@
+import pygame as pg
+
 WIDTH = 1024
 HEIGHT = 768
 # sets the FPS
@@ -23,6 +25,9 @@ WHITE = (255,255,255)
 PURPLE = (255,255,0)
 ORANGE = (255,165,0)
 GREEN = (0, 255, 0)
+LIGHTBLUE = (200,200,255)
+
+MOB_HIT_RECT = pg.Rect(0,0,96,96)
 
 # Player settings
 # PLAYER_SPEED = 300

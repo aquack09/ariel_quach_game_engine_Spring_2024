@@ -25,14 +25,17 @@ LEVEL1 = "level1.txt"
 LEVEL2 = "level2.txt"
 LEVEL3 = "level3.txt"
 
+# Draws healthbar
 def draw_health_bar(surf, x, y, pct):
     if pct < 0:
         pct = 0
+    # sets barlength and height
     BAR_LENGTH = 32
     BAR_HEIGHT = 10
     fill = (pct / 100) * BAR_LENGTH
     outline_rect = pg.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
     fill_rect = pg.Rect(x, y, fill, BAR_HEIGHT)
+    # draws healthbar with color, and outline of healthbar
     pg.draw.rect(surf, GREEN, fill_rect)
     pg.draw.rect(surf, WHITE, outline_rect, 2)
 
@@ -54,9 +57,11 @@ class Game:
         # self.img_folder = path.join(game_folder, 'images')
         # self.snd_folder = path.join(game_folder, 'sounds')
         self.game_folder = path.dirname(__file__)
+        # calls images from folder called "images"
         self.img_folder = path.join(self.game_folder, 'images')
-        self.snd_folder = path.join(self.game_folder, 'sounds')
+        # self.snd_folder = path.join(self.game_folder, 'sounds')
         # creates images for characters through converting a png to an alpha
+        # Calls images from game folder
         self.player_img = pg.image.load(path.join(self.img_folder, 'zesty_drake.png')).convert_alpha()
         self.mob_img = pg.image.load(path.join(self.img_folder, 'AnitaMaxWyn.png')).convert_alpha()
         self.BossMob_img = pg.image.load(path.join(self.img_folder, 'peter_griffin.png')).convert_alpha()
@@ -73,7 +78,7 @@ class Game:
                 print(line)
                 self.map_data.append(line)
 
-
+    # When the level changes allows for powerups, and mobs
     def change_level(self, lvl):
         self.currLvl = lvl
         # kill all existing sprites first to save memory
@@ -122,7 +127,8 @@ class Game:
         
         self.cooldown = Timer(self)
         self.testclass = Test()
-        print("start the game...")
+        # print("start the game...")
+        # Calls clases from sprites
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
@@ -176,21 +182,30 @@ class Game:
         # Updates self
         self.cooldown.ticking()
         self.all_sprites.update()
+        # Allows to change levels, and shows different screens when you change levels
         if self.player.hitpoints < 1:
-            self.show_death_screen()
             self.show_mad_screen()
+            self.show_death_screen()
+            self.show_gl_screen()
             self.change_level(LEVEL1)
-        if 2 < self.player.moneybag < 4 and self.currLvl != LEVEL2:
+        if 2 < self.player.moneybag <= 4 and self.currLvl != LEVEL3 and self.currLvl != LEVEL2:
              self.change_level(LEVEL2)
-        if self.player.moneybag > 4:
+        if self.player.moneybag > 5 and self.currLvl != LEVEL3:
+            self.show_gl_screen()
             self.change_level(LEVEL3)
+        if 6 < self.player.moneybag < 7:
+            self.show_wow_screen()
+            self.change_level(LEVEL1)
+
     
     def draw_grid(self):
+        #  draws the grid for the game
          for x in range(0, WIDTH, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
          for y in range(0, HEIGHT, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
+    # Allows to create text screens
     def draw_text(self, surface, text, size, color, x, y):
         font_name = pg.font.match_font('arial')
         font = pg.font.Font(font_name, size)
@@ -231,22 +246,34 @@ class Game:
             #         Allows for the character to move down
             #         self.player1.move(dy=1)
 
-    
+    # Different types of screens
     def show_start_screen(self):
         self.screen.fill(BGCOLOR)
-        self.draw_text(self.screen, "Press any key to start the game", 24, WHITE, WIDTH/2.75, HEIGHT/2.25)
+        self.draw_text(self.screen, "This is the Start Screen Press any key to continue", 24, WHITE, WIDTH/3.25, HEIGHT/2.25)
         pg.display.flip()
         self.wait_for_key()
     
     def show_death_screen(self):
         self.screen.fill(BGCOLOR)
-        self.draw_text(self.screen, "WOW You're so good at this game", 40, RED, WIDTH/3.75, HEIGHT/2.25)
+        self.draw_text(self.screen, "You're so good at this game", 40, RED, WIDTH/3.25, HEIGHT/2.25)
         pg.display.flip()
         self.wait_for_key()
     
     def show_mad_screen(self):
         self.screen.fill(BGCOLOR)
-        self.draw_text(self.screen, "ARE YOU EVEN A PRO GAMER???", 40, RED, WIDTH/3.75, HEIGHT/2.25)
+        self.draw_text(self.screen, "UR A BOT HOW DID YOU DIE???", 40, RED, WIDTH/3.75, HEIGHT/2.25)
+        pg.display.flip()
+        self.wait_for_key()
+
+    def show_wow_screen(self):
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "Wow you beat that level", 40, RED, WIDTH/3.75, HEIGHT/2.25)
+        pg.display.flip()
+        self.wait_for_key()
+    
+    def show_gl_screen(self):
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "GL;)", 40, RED, WIDTH/2, HEIGHT/2.25)
         pg.display.flip()
         self.wait_for_key()
 

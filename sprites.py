@@ -120,6 +120,7 @@ class Player(pg.sprite.Sprite):
     
     # made possible by Aayush's question!
     def collide_with_group(self, group, kill):
+        # Calls the powerups and the mobs, and gives values for the powerups
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
             if str(hits[0].__class__.__name__) == "Coin":
@@ -144,8 +145,15 @@ class Player(pg.sprite.Sprite):
                 # print("Collided with mob")
                 # self.hitpoints -= 1
                  self.hitpoints -= 5
-                 if self.status == "Invincible":
-                     print("you can't hurt me")
+                #  if self.status == "Invincible":
+                #      print("you can't hurt me")
+            if str(hits[0].__class__.__name__) == "Mob2":
+                # print(hits[0].__class__.__name__)
+                # print("Collided with mob")
+                # self.hitpoints -= 1
+                 self.hitpoints -= 5
+                #  if self.status == "Invincible":
+                #      print("you can't hurt me")
             if str(hits[0].__class__.__name__) == "BossMob":
                 # print(hits[0].__class__.__name__)
                 # print("Collided with mob")
@@ -237,6 +245,7 @@ class PowerUp(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
+# Class for the slow powerup
 class SlowPowerUp(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.power_ups
@@ -250,6 +259,7 @@ class SlowPowerUp(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
+# Class for the Health Poweru
 class HealthPowerUp(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.power_ups
@@ -295,10 +305,13 @@ class Mob(pg.sprite.Sprite):
         self.rot = 0
         # self.hitpoints == 100
         # added
+        # Sets speed
         self.speed = 150
         # self.health = MOB_HEALTH
 
+# allows for tracking of Mob#1
     def update(self):
+        # Mob tracking
         self.rot = (self.game.player.rect.center - self.pos).angle_to(vec(1, 0))
         # self.image = pg.transform.rotate(self.image, 45)
         # self.rect = self.image.get_rect()
@@ -315,7 +328,7 @@ class Mob(pg.sprite.Sprite):
         # if self.health <= 0:
         #     self.kill()
 
-
+# Class for Mob #2
 class Mob2(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.mobs
@@ -337,7 +350,7 @@ class Mob2(pg.sprite.Sprite):
         # added
         self.speed = 150
         # self.health = MOB_HEALTH
-
+# Allows tracking for Mob#2
     def update(self):
         self.rot = (self.game.player.rect.center - self.pos).angle_to(vec(1, 0))
         # self.image = pg.transform.rotate(self.image, 45)
@@ -355,6 +368,7 @@ class Mob2(pg.sprite.Sprite):
         # if self.health <= 0:
         #     self.kill()
 
+# Class for the BossMob
 class BossMob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.mobs
@@ -375,7 +389,7 @@ class BossMob(pg.sprite.Sprite):
         # added
         self.speed = 150
         # self.health = MOB_HEALTH
-
+# Allows for tracking of the Boss Mob
     def update(self):
         self.rot = (self.game.player.rect.center - self.pos).angle_to(vec(1, 0))
         # self.image = pg.transform.rotate(self.image, 45)
